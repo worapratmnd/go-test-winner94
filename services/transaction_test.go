@@ -5,6 +5,7 @@ import (
 	"main/model"
 	"main/repository"
 	"main/services"
+	"main/utils"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,21 +16,21 @@ func TestGetTransactionList(t *testing.T) {
 	transRepo.On("GetTransactionList").Return([]model.TransactionDb{
 		{
 			Id:         1,
-			Input:      ReturnStringPointer("111+600"),
-			Type:       ReturnStringPointer("TRANSACTION"),
-			S1:         ReturnIntPointer(1),
-			S2:         ReturnIntPointer(1),
-			S3:         ReturnIntPointer(1),
-			Total:      ReturnStringPointer("600"),
-			Status:     ReturnIntPointer(1),
-			CreateBy:   ReturnStringPointer("giftsupport"),
-			CreateDttm: ReturnStringPointer("2022-08-06 11:11:53"),
-			UpdateBy:   ReturnStringPointer("giftsupport"),
-			UpdateDttm: ReturnStringPointer("2022-08-06 11:11:53"),
-			Tables:     ReturnIntPointer(1),
-			RoundName:  ReturnStringPointer("2022-08-06"),
-			RoundNo:    ReturnIntPointer(1),
-			Result:     ReturnStringPointer("WIN"),
+			Input:      utils.ReturnStringPointer("111+600"),
+			Type:       utils.ReturnStringPointer("TRANSACTION"),
+			S1:         utils.ReturnIntPointer(1),
+			S2:         utils.ReturnIntPointer(1),
+			S3:         utils.ReturnIntPointer(1),
+			Total:      utils.ReturnStringPointer("600"),
+			Status:     utils.ReturnIntPointer(1),
+			CreateBy:   utils.ReturnStringPointer("giftsupport"),
+			CreateDttm: utils.ReturnStringPointer("2022-08-06 11:11:53"),
+			UpdateBy:   utils.ReturnStringPointer("giftsupport"),
+			UpdateDttm: utils.ReturnStringPointer("2022-08-06 11:11:53"),
+			Tables:     utils.ReturnIntPointer(1),
+			RoundName:  utils.ReturnStringPointer("2022-08-06"),
+			RoundNo:    utils.ReturnIntPointer(1),
+			Result:     utils.ReturnStringPointer("WIN"),
 		},
 	}, nil)
 
@@ -47,7 +48,7 @@ func TestUpdateTransaction(t *testing.T) {
 	)
 	transMock = model.TransactionDb{
 		Id:    887,
-		Input: ReturnStringPointer("111+6000"),
+		Input: utils.ReturnStringPointer("111+6000"),
 	}
 	mockRes = 1
 
@@ -59,14 +60,4 @@ func TestUpdateTransaction(t *testing.T) {
 	fmt.Printf("%+v", res)
 	assert.NoError(t, err)
 	// assert.Equal(t, 1, res)
-}
-
-func ReturnStringPointer(s string) *string {
-	v := s
-	return &v
-}
-
-func ReturnIntPointer(s int) *int {
-	v := s
-	return &v
 }

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"main/database"
 	"main/model"
 	"main/repository"
 	"main/services"
@@ -12,30 +11,44 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetTransaction(c *gin.Context) {
-	transactionRepo := repository.NewWinnerDb(database.MyWinnerDB)
-	transService := services.NewWinnerService(transactionRepo)
-	trans, err := transService.GetTransactionList()
-	if err != nil {
-		fmt.Println("GetTransactionList err: ", err.Error())
-	}
-
-	c.JSON(200, trans)
+type handler struct {
+	repo    repository.WinnerRepo
+	service services.WinnerService
 }
 
-func UpdateTransaction(c *gin.Context) {
+type Handler interface {
+	GetTransaction(c *gin.Context)
+	UpdateTransaction(c *gin.Context)
+}
+
+func NewHandler(transactionRepo repository.WinnerRepo, transService services.WinnerService) Handler {
+	return &handler{
+		repo:    transactionRepo,
+		service: transService,
+	}
+}
+
+func (p *handler) GetTransaction(c *gin.Context) {
+	trans, err := p.service.GetTransactionList()
+	if err != nil {
+		fmt.Println("GetTransactionList err: ", err.Error())
+		c.JSON(500, "error")
+	} else {
+		c.JSON(200, trans)
+	}
+}
+
+func (p *handler) UpdateTransaction(c *gin.Context) {
 	var (
 		transReq model.TransactionDb
 	)
 	bodyReq, err := ioutil.ReadAll(c.Request.Body)
 	if err = json.Unmarshal(bodyReq, &transReq); err != nil {
 		fmt.Println(err.Error())
+		c.JSON(500, "Error")
 	}
 
-	transactionRepo := repository.NewWinnerDb(database.MyWinnerDB)
-	transService := services.NewWinnerService(transactionRepo)
-
-	trans, err := transService.UpdateTransaction(transReq)
+	trans, err := p.service.UpdateTransaction(transReq)
 	if err != nil {
 		fmt.Println(err.Error())
 		c.JSON(500, "Error")
