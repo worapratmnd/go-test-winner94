@@ -46,6 +46,7 @@ func (p *handler) UpdateTransaction(c *gin.Context) {
 	if err = json.Unmarshal(bodyReq, &transReq); err != nil {
 		fmt.Println(err.Error())
 		c.JSON(500, "Error")
+		return
 	}
 
 	trans, err := p.service.UpdateTransaction(transReq)
